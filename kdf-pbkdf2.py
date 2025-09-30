@@ -2,13 +2,14 @@ import os
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
-# Salts should be randomly generated
+# 송신자
+password = '1234mysupersecret'
 salt = os.urandom(16)
-password = '1234mysupersecretkey'
-print('Salt: ', salt.hex())
+it = 120
 print('Password: ', password)
+print('Salt: ', salt.hex())
 
-# derive
+# 송신자 키생섬
 kdf = PBKDF2HMAC(
   algorithm=hashes.SHA256(),
   length=32,
@@ -18,7 +19,7 @@ kdf = PBKDF2HMAC(
 key = kdf.derive(password.encode())
 print('Generated key: ', key.hex())
 
-# verify
+# 수신자 키생성
 kdf = PBKDF2HMAC(
   algorithm=hashes.SHA256(),
   length=32,
@@ -26,4 +27,4 @@ kdf = PBKDF2HMAC(
   iterations=1_200_000,
 )
 kdf.verify(password.encode(), key)
-print('key verified. 검증 성공')
+print('Generated key: ', key.hex())
